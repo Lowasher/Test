@@ -1,0 +1,54 @@
+extends Node3D
+
+@export var build_radius: float = 3.0
+@export var build_distance: float = 100.0
+@export var preview_sphere: MeshInstance3D
+
+var voxel_tool: VoxelTool
+
+func _ready() -> void:
+	_setup_preview_sphere()
+
+func _process(_delta: float) -> void:
+	_update_building()
+
+func _update_building() -> void:
+	var camera = get_viewport().get_camera_3d()
+	if not camera or not voxel_tool:
+		return
+
+	var ray_from = camera.global_position
+	var ray_dir = -camera.global_transform.basis.z
+
+	var hit = voxel_tool.raycast(ray_from, ray_dir, build_distance)
+
+	if hit:
+		var build_position = hit.position - (ray_dir * build_radius)
+
+		if preview_sphere:
+			preview_sphere.visible = true
+			preview_sphere.global_position = build_position
+			preview_sphere.scale = Vector3.ONE * (build_radius * 2.0)
+
+		if Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
+			voxel_tool.mode = VoxelTool.MODE_ADD
+			voxel_tool.do_sphere(build_position, build_radius)
+	else:
+		if preview_sphere:
+			preview_sphere.visible = false
+
+func _setup_preview_sphere() -> void:
+	if not preview_sphere:
+		return
+		
+	var sphere_mesh = SphereMesh.new()
+	sphere_mesh.radius = 0.5
+	sphere_mesh.height = 1.0
+	preview_sphere.mesh = sphere_mesh
+
+	var mat = StandardMaterial3D.new()
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.albedo_color = Color(0.2, 0.8, 1.0, 0.3)
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	
+	preview_sphere.material_override = mat
