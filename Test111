@@ -1,0 +1,19 @@
+@startuml
+skinparam componentStyle rectangle
+
+rectangle "А-0: Автоматизация работы гостиницы" as frame {
+  
+  node "Заявки на бронирование\nПаспортные данные гостей\nОплата услуг" as IN
+  node "Правила проживания\nНормативные акты\nПрейскурант цен" as CTRL
+  node "Персонал гостиницы\nПО 'Система управления'\nСУБД PostgreSQL" as MECH
+  
+  rectangle "Автоматизировать работу\nгостиницы\n\n0" as A0
+  
+  node "Забронированные номера\nКассовые чеки\nОтчеты о загрузке" as OUT
+
+  IN -right-> A0 : Вход
+  CTRL -down-> A0 : Управление
+  MECH -up-> A0 : Механизм
+  A0 -right-> OUT : Выход
+}
+@enduml
