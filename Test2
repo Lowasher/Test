@@ -1,0 +1,32 @@
+@startuml
+package "Клиентская часть (Presentation Layer)" {
+  [Desktop Client (WinForms/WPF)] as UI
+}
+
+package "Сервер приложений (Business Logic Layer)" {
+  [API Gateway] as Gateway
+  [Модуль авторизации] as AuthComp
+  [Модуль бронирования] as BookingComp
+  [Модуль уборок] as CleaningComp
+  [Модуль отчетности] as ReportComp
+}
+
+package "Уровень данных & Внешние сервисы" {
+  database "PostgreSQL Database" as DB
+  [Сервис SMS/Email] as NotificationService
+  [Кассовый аппарат (ККТ)] as KKT
+}
+
+UI ..> Gateway : HTTP / REST API
+Gateway --> AuthComp
+Gateway --> BookingComp
+Gateway --> CleaningComp
+Gateway --> ReportComp
+
+BookingComp --> DB
+CleaningComp --> DB
+ReportComp --> DB
+
+BookingComp ..> NotificationService : Отправка подтверждения
+BookingComp ..> KKT : Печать чека
+@enduml
