@@ -1,0 +1,32 @@
+@startuml
+package "Presentation Layer" {
+  [Desktop Client]
+}
+
+package "Business Logic Layer" {
+  [API Gateway]
+  [Auth Module]
+  [Booking Module]
+  [Cleaning Module]
+  [Report Module]
+}
+
+package "Data Layer" {
+  database "PostgreSQL DB"
+  [SMS Email Service]
+  [KKT Hardware]
+}
+
+[Desktop Client] --> [API Gateway]
+[API Gateway] --> [Auth Module]
+[API Gateway] --> [Booking Module]
+[API Gateway] --> [Cleaning Module]
+[API Gateway] --> [Report Module]
+
+[Booking Module] --> [PostgreSQL DB]
+[Cleaning Module] --> [PostgreSQL DB]
+[Report Module] --> [PostgreSQL DB]
+
+[Booking Module] --> [SMS Email Service]
+[Booking Module] --> [KKT Hardware]
+@enduml
