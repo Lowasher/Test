@@ -1,0 +1,54 @@
+@startuml
+class User {
+  - id: int
+  - login: String
+  - passwordHash: String
+  - role: String
+  + authenticate(): bool
+}
+
+class Guest {
+  - guestId: int
+  - fullName: String
+  - passportData: String
+  - phone: String
+}
+
+class Room {
+  - roomNumber: int
+  - category: String
+  - pricePerNight: decimal
+  - status: String
+  + updateStatus(): void
+}
+
+class Booking {
+  - bookingId: int
+  - checkInDate: Date
+  - checkOutDate: Date
+  - totalPrice: decimal
+  - status: String
+  + calculateTotal(): void
+}
+
+class Payment {
+  - paymentId: int
+  - amount: decimal
+  - paymentDate: Date
+  - paymentMethod: String
+  + processPayment(): bool
+}
+
+class CleaningTask {
+  - taskId: int
+  - scheduledDate: Date
+  - isCompleted: bool
+  + markAsDone(): void
+}
+
+User "1" -- "0..*" CleaningTask
+Guest "1" -- "0..*" Booking
+Booking "1" -- "1" Room
+Booking "1" -- "0..1" Payment
+CleaningTask "0..*" -- "1" Room
+@enduml
