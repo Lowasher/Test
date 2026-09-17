@@ -1,0 +1,35 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Администратор" as Admin
+actor "Горничная" as Maid
+actor "Бухгалтер" as Accountant
+
+rectangle "Система управления гостиницей" {
+  usecase "Авторизоваться в системе" as UC_Auth
+  usecase "Бронирование номера" as UC_Booking
+  usecase "Регистрация заезда/выезда" as UC_CheckIn
+  usecase "Оформление оплаты и чека" as UC_Payment
+  usecase "Просмотр графика уборок" as UC_ViewCleaning
+  usecase "Отметка об уборке номера" as UC_MarkCleaning
+  usecase "Формирование фин. отчетов" as UC_Reports
+  
+  usecase "Поиск свободного номера" as UC_Search
+}
+
+Admin --> UC_Auth
+Admin --> UC_Booking
+Admin --> UC_CheckIn
+Admin --> UC_Payment
+
+Maid --> UC_Auth
+Maid --> UC_ViewCleaning
+Maid --> UC_MarkCleaning
+
+Accountant --> UC_Auth
+Accountant --> UC_Reports
+
+UC_Booking ..> UC_Search : <<include>>
+UC_CheckIn ..> UC_Payment : <<include>>
+@enduml
