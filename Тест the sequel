@@ -1,0 +1,24 @@
+@startuml
+skinparam componentStyle rectangle
+
+rectangle "ГОЛОВНОЙ МОДУЛЬ\n(MainModule)" as Main
+
+rectangle "Модуль авторизации\n(AuthModule)" as Auth
+rectangle "Модуль бронирования\n(BookingModule)" as Booking
+rectangle "Модуль размещения\n(StayCheckInModule)" as Stay
+rectangle "Модуль уборок\n(HousekeepingModule)" as Housekeeping
+rectangle "Модуль отчетности\n(ReportingModule)" as Reports
+
+rectangle "Модуль управления БД\n(DBModule)" as DB
+rectangle "Модуль работы с ККТ\n(KKTIntegrationModule)" as KKT
+
+Main --> Auth : Данные входа
+Main --> Booking : Параметры брони
+Main --> Stay : Данные гостя
+Main --> Housekeeping : Запрос статуса
+Main --> Reports : Период отчета
+
+Booking --> DB : Сохранение брони
+Stay --> KKT : Чек / Оплата
+Stay --> DB : Запись проживания
+@enduml
