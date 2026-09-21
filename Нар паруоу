@@ -1,0 +1,46 @@
+@startuml
+skinparam componentStyle rectangle
+skinparam direction top to bottom
+
+rectangle "Фаза: НАЧАЛО" as Phase1 {
+  [Документ-концепция\n(Vision Document)] as Vision
+  [Модель прецедентов\n(Use Case Diagram)] as UseCase
+  [Описание прецедентов\n(Use Case Specifications)] as UCSpec
+}
+
+rectangle "Фаза: ПРОЕКТИРОВАНИЕ" as Phase2 {
+  [Диаграмма\nпредметной области] as Domain
+  [Расширенная диаграмма\nклассов сущностей] as ExtDomain
+  [Диаграммы взаимодействия\n(Sequence / Collaboration)] as Interaction
+  [Модель проектирования\n(Полная диаграмма классов)] as Design
+  [Модель базы данных\n(ER-диаграмма)] as DB
+}
+
+rectangle "Фаза: ВНЕДРЕНИЕ И КАЧЕСТВО" as Phase3 {
+  [Протокол анализа\nтребований] as P1
+  [Протокол рецензирования\nархитектуры] as P2
+  [Тестовые сценарии\nи Протокол тестирования] as P3
+  [Акт приёмки-сдачи ПО] as Act
+}
+
+' Связи между артефактами (по схеме RUP)
+Vision --> Domain
+Vision --> UseCase
+UseCase --> UCSpec
+
+Domain --> ExtDomain
+UCSpec --> ExtDomain
+UCSpec --> Interaction
+
+ExtDomain --> Design
+Interaction --> Design
+Design --> DB
+
+' Связи с протоколами
+Vision ..> P1
+UseCase ..> P1
+Design ..> P2
+DB ..> P3
+P3 ..> Act
+
+@enduml
