@@ -1,0 +1,19 @@
+@startuml
+skinparam componentStyle rectangle
+
+rectangle "1: Администратор" as Admin
+rectangle "2: Форма Бронирования" as UI
+rectangle "3: Сервис Бронирования" as Service
+rectangle "4: База Данных" as DB
+
+Admin -right-> UI : 1: Ввод параметров брони
+UI -right-> Service : 2: Запрос свободных номеров
+Service -right-> DB : 3: Поиск подходящих комнат
+
+DB .left.> Service : 4: Список свободных номеров
+Service .left.> UI : 5: Отображение вариантов на форме
+
+Admin -down-> UI : 6: Подтверждение выбора и данных
+UI -down-> Service : 7: СохранитьБронь(Guest, Room)
+Service -down-> DB : 8: Вставка записи в таблицу Booking
+@enduml
