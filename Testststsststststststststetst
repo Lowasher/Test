@@ -1,0 +1,104 @@
+@startuml
+object "<u>admin1 : Administrator</u>" as Admin {
+  id = 1
+  name = "Елена Смирнова"
+  shiftStatus = "Active"
+}
+
+object "<u>guest101 : Guest</u>" as Guest {
+  id = 101
+  fullName = "Иван Иванов"
+  passportData = "4510 123456"
+}
+
+object "<u>room204 : Room</u>" as Room {
+  roomNumber = 204
+  category = "Standard Double"
+  status = "Occupied"
+  dailyPrice = 3500.00
+}
+
+object "<u>booking55 : Booking</u>" as Booking {
+  bookingId = 55
+  checkInDate = "2026-10-01"
+  checkOutDate = "2026-10-05"
+  totalPrice = 14000.00
+}
+
+Admin -- Guest : обрабатывает >
+Guest -- Room : проживает в >
+Guest -- Booking : оформил >
+Booking -- Room : относится к >
+@enduml
+
+
+
+
+
+
+@startuml
+package "Presentation Layer (UI)" as UI
+package "Booking & Guest Management" as Booking
+package "Housekeeping & Maintenance" as Housekeeping
+package "Billing & Payments Module" as Payments
+package "Database & Persistence" as DB
+
+UI ..> Booking : <<use>>
+Booking ..> Housekeeping : <<use>>
+Booking ..> Payments : <<use>>
+Housekeeping ..> DB : <<use>>
+Payments ..> DB : <<use>>
+Booking ..> DB : <<use>>
+@enduml
+
+
+
+
+
+
+
+@startuml
+rectangle "HotelSystemManager" {
+  component "GuestController : Part" as GC
+  component "ReservationController : Part" as RC
+  component "PaymentController : Part" as PC
+  
+  port "p1 : DBPort" as P1
+  port "p2 : KKTPort" as P2
+  
+  GC --> P1
+  RC --> P1
+  PC --> P2
+}
+
+interface "IDataStorage" as DB
+interface "IPaymentHardware" as KKT
+
+P1 -- DB
+P2 -- KKT
+@enduml
+
+
+
+
+
+
+
+
+
+
+@startuml
+start
+
+:ref: АвторизацияАдминистратора;
+
+if (Заявка есть в системе?) then (Да)
+  :ref: ПоискБрони;
+else (Нет)
+  :ref: ПодборНомераИСозданиеБрони;
+endif
+
+:ref: ОплатаИВыдачаКлючей;
+
+stop
+@enduml
