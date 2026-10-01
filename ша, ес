@@ -1,0 +1,14 @@
+@startuml
+package "Presentation Layer"
+package "Booking Management"
+package "Housekeeping Module"
+package "Billing Module"
+package "Database Layer"
+
+"Presentation Layer" ..> "Booking Management" : <<use>>
+"Booking Management" ..> "Housekeeping Module" : <<use>>
+"Booking Management" ..> "Billing Module" : <<use>>
+"Housekeeping Module" ..> "Database Layer" : <<use>>
+"Billing Module" ..> "Database Layer" : <<use>>
+"Booking Management" ..> "Database Layer" : <<use>>
+@enduml
