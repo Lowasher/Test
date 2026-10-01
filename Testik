@@ -1,0 +1,143 @@
+@startuml
+start
+:Гость обращается на стойку регистрации;
+:Администратор запрашивает данные брони или паспорт;
+
+if (Заявка найдена?) then (Да)
+  :Проверить готовность номера;
+else (Нет)
+  :Подобрать свободный номер;
+  :Оформить бронирование;
+endif
+
+if (Номер готов к заселению?) then (Да)
+  :Принять оплату / залог;
+  :Зарегистрировать гостя в системе;
+  :Выдать ключи и чек;
+  :Изменить статус номера на "Занят";
+  stop
+else (Нет)
+  :Предложить гостю подождать;
+  :Отправить уведомление службе уборки;
+  stop
+endif
+@enduml
+
+
+
+
+@startuml
+skinparam componentStyle rectangle
+
+rectangle "A0: Автоматизировать работу гостиницы" as frame {
+
+  rectangle "Обрабатывать\nбронирования\n\n1" as A1
+  rectangle "Оформлять\nзаезд и выезд\n\n2" as A2
+  rectangle "Контролировать\nуборку номеров\n\n3" as A3
+  rectangle "Формировать\nотчетность\n\n4" as A4
+
+  [Заявки гостей] --> A1
+  [Правила бронирования] --> A1
+  [Администратор] --> A1
+
+  A1 --> A2 : Данные брони
+  [Паспортные данные] --> A2
+  [Прейскурант] --> A2
+  [Кассовый аппарат] --> A2
+
+  A2 --> A3 : Статус номера (освобожден)
+  [График смен] --> A3
+  [Горничная] --> A3
+
+  A1 --> A4 : Статистика броней
+  A2 --> A4 : Данные о доходах
+  A3 --> A4 : Отчеты об уборке
+  [Бухгалтер] --> A4
+
+  A1 --> [Подтверждение брони]
+  A2 --> [Чек и ключи]
+  A3 --> [Готовый номер]
+  A4 --> [Финансовый отчет]
+}
+@enduml
+
+
+
+
+
+
+@startuml
+actor "Администратор" as Admin
+boundary "Интерфейс PMS" as UI
+control "Контроллер проживания" as Controller
+database "База Данных" as DB
+entity "Кассовый Аппарат" as KKT
+
+Admin -> UI : Ввод паспортных данных и выбор номера
+UI -> Controller : ОформитьЗаселение(GuestData, RoomId)
+Controller -> DB : ПроверитьСтатус(RoomId)
+DB --> Controller : Номер свободен
+Controller -> KKT : ПровестиОплату(Сумма)
+KKT --> Controller : Чек сформирован
+Controller -> DB : ОбновитьСтатусГостяИНомера()
+DB --> Controller : Успешно
+Controller --> UI : Подтверждение заселения
+UI --> Admin : Вывод чека и карточки гостя
+@enduml
+
+
+
+
+
+
+
+
+@startuml
+skinparam componentStyle rectangle
+
+rectangle " Admin : Администратор " as Admin
+rectangle " : ФормаБронирования " as UI
+rectangle " : СервисБронирования " as Service
+rectangle " : БазаДанных " as DB
+
+Admin -right-> UI : 1: Ввод дат и выбор категории >
+UI -down-> Service : 2: Запрос свободных мест >
+Service -right-> DB : 3: Поиск номеров по параметрам >
+DB .left.> Service : 4: Возврат списка номеров
+Service .up.> UI : 5: Отображение доступных вариантов
+Admin -right-> UI : 6: Подтверждение брони >
+UI -down-> Service : 7: СохранитьБронь(Guest, Room) >
+Service -right-> DB : 8: Вставка записи в таблицу Booking >
+@enduml
+
+
+
+
+
+
+
+@startuml
+node "Рабочая станция Администратора" <<Device>> {
+  node "Windows 11" <<OS>> {
+    component "Клиентское приложение (WinForms / WPF)" as Client
+  }
+}
+
+node "Терминал оплаты / ККТ" <<Device>> {
+  component "Драйвер эквайринга" as POS
+}
+
+node "Сервер приложений отеля" <<Server>> {
+  node "Linux (Ubuntu Server)" <<OS>> {
+    component "REST API Service (.NET Core)" as AppServer
+  }
+}
+
+node "Сервер баз данных" <<Server>> {
+  database "PostgreSQL DB" as DB
+}
+
+Client -- POS : RS-232 / USB
+Client -- AppServer : HTTPS / JSON (LAN)
+AppServer -- DB : TCP/IP (Port 5432)
+@enduml
